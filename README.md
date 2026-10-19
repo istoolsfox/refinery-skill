@@ -27,16 +27,25 @@ refinery 的答案不是"提醒 AI 注意"，而是**把规范变成带闸门的
 
 一个值得说的细节：**铁律 3 的"管道陷阱"条款来自真实事故**——AI 在管道里跑 `flutter test | tail` 后取 `$?`，拿到的是 tail 的退出码，得到假基线 exit=0，被复跑抓出。AI 也会犯它要防的错，所以裁决权必须从 AI 手里拿走。
 
-## 快速开始
+## 快速开始（按你的 Agent 工具选一种）
 
-把 `refinery/` 整个目录拷进你的 Agent 技能目录即可（以 `~/.agents/skills/` 为例）：
+| 你的工具 | 安装方式 |
+|---|---|
+| **ZCode** 及任意支持 `.agents/skills` 跨工具约定的 Agent | `./install.sh`（自动装到 `~/.agents/skills/`） |
+| **Claude Code** | `./install.sh --claude`（装到 `~/.claude/skills/`）；项目级用 `--project` |
+| **其他 SKILL 兼容 Agent** | `./install.sh --dir <它的技能目录>` |
+| **没有技能机制的 Agent**（Codex / Cursor 等） | 把 [`snippets/agents-md-snippet.md`](snippets/agents-md-snippet.md) 整段贴进 `AGENTS.md`（或 `.cursorrules` 等等价规则文件） |
+
+也可以手动装（效果同 install.sh）：
 
 ```bash
 git clone https://github.com/istoolsfox/refinery-skill.git
-cp -r refinery-skill/refinery ~/.agents/skills/
+cp -r refinery-skill/skills/refinery ~/.agents/skills/   # Claude Code 用户改为 ~/.claude/skills/
 ```
 
-然后在对项目说话时用触发词即可：**优化代码 / 清理死代码 / 代码体检 / 精炼 / 重构 / optimize / refactor / clean up dead code**。
+重复执行 install.sh = 覆盖更新。部分 Agent 需要重启会话才会重新扫描技能目录。
+
+装好后，在任意项目里用触发词即可：**优化代码 / 清理死代码 / 代码体检 / 精炼 / 重构 / optimize / refactor / clean up dead code**。
 
 ### 可选配置
 
@@ -56,18 +65,25 @@ cp -r refinery-skill/refinery ~/.agents/skills/
 ## 目录结构
 
 ```
-refinery/
-├── SKILL.md                        # 六步流水线主流程 + 内嵌十条军规
-└── reference/
-    ├── testing-protocol.md         # ★ 测试纪律五铁律（硬闸门）+ 无测试降级路径
-    ├── testing-techniques.md       # 测试方法工具箱：变异测试工具矩阵/AI 测试三大病/性质测试/LLM evals
-    ├── modes.md                    # 三模式细则 + 上游考古方法
-    ├── dead-code-evidence.md       # 死代码四步证据链（按语言的动态调用陷阱清单）
-    ├── adversarial-review.md       # 七视角红队 + 优化报告固定模板
-    └── philosophy-template.md      # PHILOSOPHY.md 模板 + 提炼方法
-└── scripts/
-    └── recon.sh                    # 机械侦察：git 身份/哲学文件/技术栈/测试命令（只读）
+├── install.sh                      # 多目标安装器（--user/--claude/--project/--dir/--all）
+├── skills/
+│   └── refinery/
+│       ├── SKILL.md                # 六步流水线主流程 + 内嵌十条军规
+│       ├── reference/
+│       │   ├── testing-protocol.md # ★ 测试纪律五铁律（硬闸门）+ 无测试降级路径
+│       │   ├── testing-techniques.md # 测试方法工具箱：变异测试工具矩阵/AI 测试三大病/性质测试/LLM evals
+│       │   ├── modes.md            # 三模式细则 + 上游考古方法
+│       │   ├── dead-code-evidence.md # 死代码四步证据链（按语言的动态调用陷阱清单）
+│       │   ├── adversarial-review.md # 七视角红队 + 优化报告固定模板
+│       │   └── philosophy-template.md # PHILOSOPHY.md 模板 + 提炼方法
+│       └── scripts/
+│           └── recon.sh            # 机械侦察：git 身份/哲学文件/技术栈/测试命令（只读）
+├── snippets/
+│   └── agents-md-snippet.md        # 无技能机制 Agent 的兜底安装片段
+└── .zcode-plugin/plugin.json       # ZCode 插件清单（skills 指向 skills/）
 ```
+
+SKILL.md 格式遵循 Agent Skills 约定（YAML frontmatter：`name` 必须等于目录名、`description` 承担触发），`.agents/skills/` 是跨工具的通用技能位置。
 
 ## 设计来源
 

@@ -1,0 +1,10 @@
+{
+  "name": "refinery-skill",
+  "version": "1.0.0",
+  "description": "一句话触发的全项目代码优化引擎：侦察→定档→基线→四道工序→对抗自查→优化报告，内置三模式适配与测试纪律硬闸门。",
+  "author": {
+    "name": "istoolsfox"
+  },
+  "license": "MIT",
+  "skills": "skills"
+}
